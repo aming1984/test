@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تولید کننده سوالات ریاضی</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            direction: rtl; /* جهت متن از راست به چپ */
+        }
+        .container {
+            display: inline-block;
+            text-align: right;
+        }
+        #question {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        input {
+            padding: 10px;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+        }
+        #result, #finalResult {
+            font-size: 20px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="question">در حال بارگذاری سوال...</div>
+    <input type="number" id="answer" placeholder="پاسخ خود را اینجا وارد کنید">
+    <button onclick="checkAnswer()">ارسال</button>
+    <div id="result"></div>
+    <div id="finalResult"></div>
+</div>
+
+<script>
+    let num1, num2, correctAnswer;
+    let questionCount = 0;
+    const totalQuestions = 10;
+    const questions = [];
+    const userAnswers = [];
+    const correctAnswers = [];
+
+    function generateQuestion() {
+        if (questionCount < totalQuestions) {
+            num1 = Math.floor(Math.random() * 10) + 1;
+            num2 = Math.floor(Math.random() * 10) + 1;
+            correctAnswer = num1 + num2;
+            document.getElementById('question').textContent = `مجموع ${num1} + ${num2} چند است؟`;
+            document.getElementById('result').textContent = ''; // پاک کردن نتیجه برای سوال جدید
+            document.getElementById('answer').value = ''; // پاک کردن پاسخ قبلی
+        } else {
+            showFinalResult();
+        }
+    }
+
+    function checkAnswer() {
+        if (questionCount >= totalQuestions) {
+            return; // سوالات بیشتری وجود ندارد
+        }
+
+        const userAnswer = parseInt(document.getElementById('answer').value);
+        if (isNaN(userAnswer)) {
+            document.getElementById('result').textContent = 'لطفاً یک عدد معتبر وارد کنید.';
+            return;
+        }
+
+        // ذخیره سوال و پاسخ کاربر
+        questions.push(`${num1} + ${num2}`);
+        userAnswers.push(userAnswer);
+        correctAnswers.push(correctAnswer);
+
+        if (userAnswer === correctAnswer) {
+            document.getElementById('result').textContent = 'درست است!';
+        } else {
+            document.getElementById('result').textContent = 'اشتباه است.';
+        }
+
+        questionCount++;
+        generateQuestion(); // تولید سوال جدید
+    }
+
+    function showFinalResult() {
+        let finalResult = `<h3>نتایج:</h3>`;
+        for (let i = 0; i < totalQuestions; i++) {
+            const result = userAnswers[i] === correctAnswers[i] ? 'درست' : 'اشتباه';
+            finalResult += `<p>سوال ${i + 1}: ${questions[i]} = ${correctAnswers[i]} (پاسخ شما: ${userAnswers[i]}) - ${result}</p>`;
+        }
+        document.getElementById('finalResult').innerHTML = finalResult;
+    }
+
+    // تولید اولین سوال پس از بارگذاری صفحه
+    window.onload = generateQuestion;
+</script>
+
+</body>
+</html>
